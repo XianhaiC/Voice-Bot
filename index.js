@@ -75,6 +75,8 @@ function handleMessage(message) {
       commandPlaylist(message.member, message.content);
       break;
     case 'skip':
+    case 'next':
+      textChannel = message.channel;
       commandSkip();
       break;
     case 'pause':
@@ -94,6 +96,7 @@ function handleMessage(message) {
       commandStop();
       break;
     case 'reset':
+    case 'clear':
       commandReset();
       break;
     case 'repeat':
@@ -131,6 +134,7 @@ function handleSpeech(member, speech) {
       commandPlaylist(member, speech);
       break;
     case 'skip':
+    case 'next':
       commandSkip();
       break;
     case 'pause':
@@ -143,6 +147,7 @@ function handleSpeech(member, speech) {
       commandStop();
       break;
     case 'reset':
+    case 'clear':
       commandReset();
       break;
     case 'repeat':
@@ -156,12 +161,10 @@ function handleSpeech(member, speech) {
 }
 
 function handleSpeaking(member, speaking) {
-  console.log("handling stream");
   // Close the writeStream when a member stops speaking
   if (!speaking && member.voiceChannel) {
     let stream = listenStreams.get(member.id);
     if (stream) {
-      console.log("closing stream");
       listenStreams.delete(member.id);
       stream.end(err => {
         if (err) {
@@ -175,7 +178,6 @@ function handleSpeaking(member, speaking) {
         decode.convertOpusStringToRawPCM(stream.path,
           basename,
           (function() {
-            console.log("translating");
             processRawToWav(
               path.join('./recordings', basename + '.raw_pcm'),
               path.join('./recordings', basename + '.wav'),
@@ -227,8 +229,10 @@ function commandPlaylist(member, msg) {
 }
 
 function commandSkip() {
-  skipSong();
-  textChannel.send("Skipping current song!");
+  if (queue.length > 0) {
+    skipSong();
+    textChannel.send("Skipping current song!");
+  }
 }
 
 function commandPause() {
@@ -331,7 +335,9 @@ function commandLeave() {
 function commandReset() {
   if (queue.length > 0) {
     queue = [];
-    dispatcher.end();
+    if (dispatcher) {
+      dispatcher.end();
+    }
     textChannel.send("The queue has been cleared.");
   }
 }
@@ -386,7 +392,9 @@ function commandImage(member, msg) {
 }
 
 function skipSong() {
-  dispatcher.end();
+  if (dispatcher) {
+    dispatcher.end();
+  }
 }
 
 function playRequest(args) {
@@ -472,7 +480,7 @@ function playMusic(id) {
     dispatcher.on('end', function() {
       dispatcher = null;
       queue.shift();
-      console.log(queue);
+      console.log("queue size: " + queue.length);
       if (queue.length === 0) {
         queue = [];
         isPlaying = false;
@@ -561,7 +569,7 @@ function processRawToWav(filepath, outputpath, cb) {
 
       // check in the promise for the completion of call to witai
       parseSpeech.then((data) => {
-        console.log(data._text);
+        console.log("you said: " + data._text);
         cb(data);
         //return data;
       })
