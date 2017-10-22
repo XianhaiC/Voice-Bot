@@ -1,0 +1,38 @@
+{
+  "name": "voice_bot",
+  "version": "1.0.0",
+  "description": "A discord bot that listens to voice commands",
+  "main": "index.js",
+  "engines": {
+    "node": "6.11.4",
+    "npm": "3.10.10"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/XianhaiC/Voice-Bot.git"
+  },
+  "author": "Xianhai Cao",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/XianhaiC/Voice-Bot/issues"
+  },
+  "homepage": "https://github.com/XianhaiC/Voice-Bot#readme",
+  "dependencies": {
+    "discord.js": "^11.2.1",
+    "ffmpeg": "0.0.4",
+    "fluent-ffmpeg": "^2.1.2",
+    "fs": "0.0.1-security",
+    "get-youtube-id": "^1.0.0",
+    "imgur-search": "^1.0.1",
+    "node-opus": "^0.2.7",
+    "node-witai-speech": "^1.0.2",
+    "request": "^2.83.0",
+    "underscore": "^1.8.3",
+    "youtube-info": "^1.1.2",
+    "ytdl-core": "^0.18.1"
+  }
+}
